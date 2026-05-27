@@ -15,8 +15,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LUMINEX Invitation",
-  description: "Wisuda SMK Telkom Malang",
+  title: "Undangan Wisuda LUMINEX | SMK Telkom Malang Angkatan 32",
+  description:
+    "Undangan digital wisuda LUMINEX – SMK Telkom Malang Angkatan 32. Konfirmasi kehadiran, lihat rundown acara, dan unduh e-ticket Anda.",
+  other: {
+    "theme-color": "#071840",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: "yes",
 };
 
 export default function RootLayout({
@@ -26,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="id"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">

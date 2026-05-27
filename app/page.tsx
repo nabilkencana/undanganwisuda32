@@ -29,23 +29,30 @@ export default function Home() {
         <div className="mb-8 flex flex-col items-center">
 
 {/* FRAME LOGO */}
-<div className="absolute left-1/2 top-[-10px] z-30 -translate-x-1/2 ">
+<div className="absolute left-1/2 top-0 z-30 -translate-x-1/2">
 
-  <Image
-    src="/logo1.png"
-    alt="Logo"
-    width={380}
-    height={140}
-    priority
-    className="
-      h-auto
-      w-[170px]
-      rounded-[16px]
-      object-contain
-      sm:w-[210px]
-      md:w-[250px]
-    "
-  />
+  <div
+    className="rounded-[14px] px-2 py-1.5"
+    style={{
+      background: "#ffffff",
+      boxShadow: "0 4px 20px rgba(0,0,0,0.2), 0 1px 4px rgba(0,0,0,0.1)",
+    }}
+  >
+    <Image
+      src="/logo1.png"
+      alt="Logo"
+      width={380}
+      height={80}
+      priority
+      className="
+        h-auto
+        w-[120px]
+        object-contain
+        sm:w-[150px]
+        md:w-[190px]
+      "
+    />
+  </div>
 
 </div>
 

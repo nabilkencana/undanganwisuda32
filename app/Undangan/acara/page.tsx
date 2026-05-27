@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapPin, Shirt, Sparkles } from "lucide-react";
+import { MapPin, Shirt, Sparkles, Share2 } from "lucide-react";
 import BottomNav from "@/components/BottonNav";
 
 export default function AcaraPage() {
@@ -256,88 +256,6 @@ export default function AcaraPage() {
           {/* ===== INFO CARDS ===== */}
           <div className="mt-8 flex flex-col gap-5">
 
-            {/* ===== LOCATION ===== */}
-            <div
-              className="animate-fadein overflow-hidden rounded-[26px] p-6"
-              style={{
-                animationDelay: "0.1s",
-                background: "linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.025) 60%, rgba(13,52,112,0.15) 100%)",
-                border: "1px solid rgba(255,255,255,0.09)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), 0 25px 50px rgba(0,0,0,0.35)",
-                backdropFilter: "blur(20px)",
-              }}
-            >
-              {/* shimmer */}
-              <div
-                className="absolute top-0 left-5 right-5 h-px"
-                style={{ background: "linear-gradient(to right, transparent, rgba(255,215,0,0.3), transparent)" }}
-              />
-
-              <div className="flex items-start gap-5">
-                {/* icon */}
-                <div
-                  className="flex h-14 w-14 min-w-[56px] items-center justify-center rounded-2xl"
-                  style={{
-                    background: "rgba(255,215,0,0.08)",
-                    border: "1px solid rgba(255,215,0,0.2)",
-                    boxShadow: "inset 0 1px 0 rgba(255,215,0,0.1)",
-                  }}
-                >
-                  <MapPin size={24} className="text-yellow-300" />
-                </div>
-
-                <div className="flex-1">
-                  <p
-                    className="text-[10px] text-yellow-400/60"
-                    style={{ letterSpacing: "0.4em", fontFamily: "'Cinzel', serif" }}
-                  >
-                    LOKASI
-                  </p>
-
-                  <h2
-                    className="mt-2 text-white"
-                    style={{
-                      fontFamily: "'Cinzel', serif",
-                      fontSize: "clamp(20px,5vw,28px)",
-                      fontWeight: 700,
-                      letterSpacing: "0.05em",
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    Graha Cakrawala<br />
-                    <span style={{ color: "#ffd700", fontSize: "0.75em" }}>UM</span>
-                  </h2>
-
-                  <p
-                    className="mt-3 leading-7 text-white/45"
-                    style={{
-                      fontFamily: "'Cormorant Garamond', Georgia, serif",
-                      fontSize: "clamp(13px,2.2vw,15px)",
-                      fontStyle: "italic",
-                    }}
-                  >
-                    Universitas Negeri Malang, Jl. Cakrawala, Sumbersari, Lowokwaru, Kota Malang
-                  </p>
-
-                  <a
-                    href="https://maps.app.goo.gl/6KkrjWt3PZj8j6dL8"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-5 inline-flex items-center gap-2.5 rounded-full px-5 py-2.5 text-xs font-bold text-[#050f20] transition-all active:scale-95"
-                    style={{
-                      fontFamily: "'Cinzel', serif",
-                      letterSpacing: "0.1em",
-                      background: "linear-gradient(135deg, #ffd700 0%, #f0c000 100%)",
-                      boxShadow: "0 0 0 1px rgba(255,215,0,0.3), 0 8px 20px rgba(255,215,0,0.2)",
-                    }}
-                  >
-                    <Sparkles size={13} />
-                    BUKA MAPS
-                  </a>
-                </div>
-              </div>
-            </div>
-
             {/* ===== DRESSCODE ===== */}
             <div
               className="animate-fadein overflow-hidden rounded-[26px] p-6"
@@ -422,6 +340,143 @@ export default function AcaraPage() {
             </div>
 
           </div>
+
+          {/* ===== MAPS SECTION ===== */}
+          <div className="mt-8">
+
+            {/* Section header */}
+            <div className="mb-5 flex items-center gap-3">
+              <div className="h-px flex-1" style={{ background: "linear-gradient(to right, transparent, rgba(255,215,0,0.3))" }} />
+              <div className="flex items-center gap-2">
+                <MapPin size={12} className="text-yellow-400/60" />
+                <p className="text-[10px] uppercase tracking-[0.4em] text-white/40" style={{ fontFamily: "'Cinzel', serif" }}>
+                  Lokasi Venue
+                </p>
+              </div>
+              <div className="h-px flex-1" style={{ background: "linear-gradient(to left, transparent, rgba(255,215,0,0.3))" }} />
+            </div>
+
+            {/* Venue name badge */}
+            <div className="mb-4 flex flex-col items-center gap-1 text-center">
+              <p
+                style={{
+                  fontFamily: "'Cinzel', serif",
+                  fontSize: "clamp(22px,5vw,28px)",
+                  fontWeight: 900,
+                  color: "#f5e9c0",
+                  letterSpacing: "0.06em",
+                  lineHeight: 1.2,
+                }}
+              >
+                Graha Cakrawala
+              </p>
+              <p style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: "#ffd700", letterSpacing: "0.25em", opacity: 0.8 }}>
+                UNIVERSITAS NEGERI MALANG
+              </p>
+            </div>
+
+            {/* MAP CARD */}
+            <div
+              className="animate-fadein overflow-hidden rounded-[26px]"
+              style={{
+                border: "1px solid rgba(255,215,0,0.15)",
+                boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 30px 60px rgba(0,0,0,0.5)",
+              }}
+            >
+              {/* map iframe */}
+              <div className="relative overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps?q=Graha+Cakrawala+Universitas+Negeri+Malang&output=embed"
+                  className="w-full"
+                  style={{ height: 300, display: "block", border: "none" }}
+                  loading="lazy"
+                  title="Lokasi Graha Cakrawala UM"
+                />
+                {/* gradient fade bottom */}
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
+                  style={{ background: "linear-gradient(to top, rgba(5,15,32,0.95), transparent)" }}
+                />
+                {/* gradient fade top */}
+                <div
+                  className="absolute top-0 left-0 right-0 h-10 pointer-events-none"
+                  style={{ background: "linear-gradient(to bottom, rgba(5,15,32,0.4), transparent)" }}
+                />
+              </div>
+
+              {/* address card */}
+              <div
+                className="px-6 pt-5 pb-6"
+                style={{
+                  background: "linear-gradient(180deg, rgba(7,24,64,0.95) 0%, rgba(5,15,32,0.98) 100%)",
+                }}
+              >
+                {/* address row */}
+                <div className="flex items-start gap-3">
+                  <div
+                    className="mt-0.5 flex h-8 w-8 min-w-[32px] items-center justify-center rounded-xl"
+                    style={{ background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.2)" }}
+                  >
+                    <MapPin size={14} className="text-yellow-300/80" />
+                  </div>
+                  <div>
+                    <p style={{ fontFamily: "'Cinzel', serif", fontSize: 13, fontWeight: 700, letterSpacing: "0.04em" }} className="text-white/90">
+                      Jl. Semarang No.5
+                    </p>
+                    <p
+                      className="mt-0.5 leading-6 text-white/40"
+                      style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 13, fontStyle: "italic" }}
+                    >
+                      Sumbersari, Lowokwaru, Kota Malang,<br />Jawa Timur 65145
+                    </p>
+                  </div>
+                </div>
+
+                {/* divider */}
+                <div className="my-4 h-px" style={{ background: "linear-gradient(to right, transparent, rgba(255,215,0,0.12), transparent)" }} />
+
+                {/* action buttons */}
+                <div className="flex gap-3">
+                  <a
+                    href="https://maps.app.goo.gl/rcJPhbsJDxRMGWS7A"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-2xl py-3.5 font-bold text-[#050f20] transition-all active:scale-[0.97]"
+                    style={{
+                      fontFamily: "'Cinzel', serif",
+                      letterSpacing: "0.08em",
+                      fontSize: 11,
+                      background: "linear-gradient(135deg, #ffd700 0%, #f0c000 100%)",
+                      boxShadow: "0 0 0 1px rgba(255,215,0,0.3), 0 8px 20px rgba(255,215,0,0.2)",
+                      minHeight: 48,
+                    }}
+                  >
+                    <MapPin size={13} />
+                    PETUNJUK ARAH
+                  </a>
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent("Lokasi Wisuda Angkatan 32 SMK Telkom Malang:\nGraha Cakrawala UM\nhttps://maps.app.goo.gl/rcJPhbsJDxRMGWS7A")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-4 py-3.5 transition-all active:scale-[0.97]"
+                    style={{
+                      fontSize: 11,
+                      fontFamily: "'Cinzel', serif",
+                      letterSpacing: "0.06em",
+                      color: "rgba(255,215,0,0.8)",
+                      background: "rgba(255,215,0,0.06)",
+                      border: "1px solid rgba(255,215,0,0.2)",
+                      minHeight: 48,
+                    }}
+                  >
+                    <Share2 size={14} />
+                    BAGIKAN
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
 
           {/* ===== FOOTER SPARKLES ===== */}
           <div className="mt-12 flex justify-center gap-3">

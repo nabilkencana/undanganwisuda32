@@ -4,13 +4,83 @@ import { useEffect, useState } from "react";
 import { MapPin, Shirt, Sparkles, Share2 } from "lucide-react";
 import BottomNav from "@/components/BottonNav";
 
+const API = process.env.NEXT_PUBLIC_API_URL ?? "";
+
+function formatEventDate(iso: string) {
+  try {
+    return new Intl.DateTimeFormat("id-ID", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }).format(new Date(iso));
+  } catch {
+    return "Kamis, 11 Juni 2026";
+  }
+}
+
+function formatEventTime(iso: string) {
+  try {
+    return new Intl.DateTimeFormat("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(new Date(iso)) + " WIB";
+  } catch {
+    return "08.00 WIB";
+  }
+}
+
 export default function AcaraPage() {
   const [timeLeft, setTimeLeft] = useState({ hari: 0, jam: 0, menit: 0, detik: 0 });
   const [mounted, setMounted] = useState(false);
 
+  const [eventData, setEventData] = useState({
+    title: "Wisuda",
+    eventDate: "2026-06-11T08:00:00",
+    venue: "Graha Cakrawala",
+    address: "UNIVERSITAS NEGERI MALANG",
+    subAddress: "Jl. Semarang No.5\nSumbersari, Lowokwaru, Kota Malang,\nJawa Timur 65145",
+    mapUrl: "https://www.google.com/maps?q=Graha+Cakrawala+Universitas+Negeri+Malang&output=embed",
+    directionUrl: "https://maps.app.goo.gl/rcJPhbsJDxRMGWS7A"
+  });
+
   useEffect(() => {
-    setMounted(true);
-    const targetDate = new Date("2026-06-11T08:00:00").getTime();
+    const hash = typeof window !== "undefined" ? sessionStorage.getItem("invitation-hash") : null;
+    if (!hash) {
+      setMounted(true);
+      return;
+    }
+
+    fetch(`${API}/api/invitation/${hash}`)
+      .then((r) => r.json())
+      .then((res) => {
+        if (res?.data?.event) {
+          const e = res.data.event;
+          setEventData({
+            title: e.title || "Wisuda",
+            eventDate: e.eventDate || "2026-06-11T08:00:00",
+            venue: e.venue || "Graha Cakrawala",
+            address: e.venue === "Graha Cakrawala" ? "UNIVERSITAS NEGERI MALANG" : (e.description || "Lokasi Acara"),
+            subAddress: e.venue === "Graha Cakrawala" 
+              ? "Jl. Semarang No.5\nSumbersari, Lowokwaru, Kota Malang,\nJawa Timur 65145"
+              : (e.description || ""),
+            mapUrl: e.latitude && e.longitude 
+              ? `https://maps.google.com/maps?q=${e.latitude},${e.longitude}&z=15&output=embed`
+              : `https://www.google.com/maps?q=${encodeURIComponent(e.venue || "Graha Cakrawala")}&output=embed`,
+            directionUrl: e.latitude && e.longitude 
+              ? `https://www.google.com/maps?daddr=${e.latitude},${e.longitude}`
+              : `https://maps.google.com/?q=${encodeURIComponent(e.venue || "Graha Cakrawala")}`
+          });
+        }
+      })
+      .catch((err) => console.error("Failed to fetch event data:", err))
+      .finally(() => setMounted(true));
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const targetDate = new Date(eventData.eventDate).getTime();
 
     const tick = () => {
       const distance = targetDate - Date.now();
@@ -21,15 +91,16 @@ export default function AcaraPage() {
       setTimeLeft({
         hari: Math.floor(distance / (1000 * 60 * 60 * 24)),
         jam: Math.floor((distance / (1000 * 60 * 60)) % 24),
+        focusMinute: 0,
         menit: Math.floor((distance / (1000 * 60)) % 60),
         detik: Math.floor((distance / 1000) % 60),
-      });
+      } as any);
     };
 
     tick();
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [mounted, eventData.eventDate]);
 
   const countdownItems = [
     { label: "Hari", value: timeLeft.hari },
@@ -124,7 +195,7 @@ export default function AcaraPage() {
                     className="mt-1 text-white"
                     style={{ fontFamily: "'Cinzel', serif", fontSize: "clamp(14px,3vw,18px)", letterSpacing: "0.06em" }}
                   >
-                    Kamis, 11 Juni 2026
+                    {formatEventDate(eventData.eventDate)}
                   </p>
                 </div>
                 <div
@@ -142,7 +213,7 @@ export default function AcaraPage() {
                     className="mt-1 text-white"
                     style={{ fontFamily: "'Cinzel', serif", fontSize: "clamp(14px,3vw,18px)", letterSpacing: "0.06em" }}
                   >
-                    08.00 WIB
+                    {formatEventTime(eventData.eventDate)}
                   </p>
                 </div>
                 <div
@@ -160,7 +231,7 @@ export default function AcaraPage() {
                     className="mt-1 text-yellow-300"
                     style={{ fontFamily: "'Cinzel', serif", fontSize: "clamp(12px,2.5vw,15px)", letterSpacing: "0.04em" }}
                   >
-                    Wisuda
+                    {eventData.title}
                   </p>
                 </div>
               </div>
@@ -368,11 +439,13 @@ export default function AcaraPage() {
                   lineHeight: 1.2,
                 }}
               >
-                Graha Cakrawala
+                {eventData.venue}
               </p>
-              <p style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: "#ffd700", letterSpacing: "0.25em", opacity: 0.8 }}>
-                UNIVERSITAS NEGERI MALANG
-              </p>
+              {eventData.address && (
+                <p style={{ fontFamily: "'Cinzel', serif", fontSize: 13, color: "#ffd700", letterSpacing: "0.25em", opacity: 0.8 }}>
+                  {eventData.address}
+                </p>
+              )}
             </div>
 
             {/* MAP CARD */}
@@ -386,11 +459,11 @@ export default function AcaraPage() {
               {/* map iframe */}
               <div className="relative overflow-hidden">
                 <iframe
-                  src="https://www.google.com/maps?q=Graha+Cakrawala+Universitas+Negeri+Malang&output=embed"
+                  src={eventData.mapUrl}
                   className="w-full"
                   style={{ height: 300, display: "block", border: "none" }}
                   loading="lazy"
-                  title="Lokasi Graha Cakrawala UM"
+                  title={`Lokasi ${eventData.venue}`}
                 />
                 {/* gradient fade bottom */}
                 <div
@@ -408,7 +481,7 @@ export default function AcaraPage() {
               <div
                 className="px-6 pt-5 pb-6"
                 style={{
-                  background: "linear-gradient(180deg, rgba(7,24,64,0.95) 0%, rgba(5,15,32,0.98) 100%)",
+                  background: "linear-gradient(180deg, rgba(7,24,64,0.95) 0%, rgba(5,15,32,0.97) 100%)",
                 }}
               >
                 {/* address row */}
@@ -421,13 +494,13 @@ export default function AcaraPage() {
                   </div>
                   <div>
                     <p style={{ fontFamily: "'Cinzel', serif", fontSize: 13, fontWeight: 700, letterSpacing: "0.04em" }} className="text-white/90">
-                      Jl. Semarang No.5
+                      {eventData.venue}
                     </p>
                     <p
-                      className="mt-0.5 leading-6 text-white/40"
+                      className="mt-0.5 leading-6 text-white/40 whitespace-pre-line"
                       style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 13, fontStyle: "italic" }}
                     >
-                      Sumbersari, Lowokwaru, Kota Malang,<br />Jawa Timur 65145
+                      {eventData.subAddress}
                     </p>
                   </div>
                 </div>
@@ -438,7 +511,7 @@ export default function AcaraPage() {
                 {/* action buttons */}
                 <div className="flex gap-3">
                   <a
-                    href="https://maps.app.goo.gl/rcJPhbsJDxRMGWS7A"
+                    href={eventData.directionUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex flex-1 items-center justify-center gap-2 rounded-2xl py-3.5 font-bold text-[#050f20] transition-all active:scale-[0.97]"
@@ -455,7 +528,7 @@ export default function AcaraPage() {
                     PETUNJUK ARAH
                   </a>
                   <a
-                    href={`https://wa.me/?text=${encodeURIComponent("Lokasi Wisuda Angkatan 32 SMK Telkom Malang:\nGraha Cakrawala UM\nhttps://maps.app.goo.gl/rcJPhbsJDxRMGWS7A")}`}
+                    href={`https://wa.me/?text=${encodeURIComponent(`Lokasi Wisuda Angkatan 32 SMK Telkom Malang:\n${eventData.venue}\n${eventData.directionUrl}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 rounded-2xl px-4 py-3.5 transition-all active:scale-[0.97]"

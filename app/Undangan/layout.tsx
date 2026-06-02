@@ -11,22 +11,24 @@ const ADMIN_WA_MESSAGE = encodeURIComponent(
 );
 
 // Path yang boleh diakses tanpa hash
-const EXEMPT_PATHS = ["/", "/Undangan"];
+const EXEMPT_PATHS = [
+  "/",
+  "/Undangan",
+  "/Undangan/opening",
+  "/Undangan/acara",
+  "/Undangan/rundown",
+  "/Undangan/note",
+  "/Undangan/rsvp",
+  "/Undangan/gallery",
+  "/Undangan/komentar",
+  "/Undangan/thanks",
+  "/Undangan/maps",
+];
 
 // Apakah path ini adalah hash page (e.g. /Undangan/abc123)
 function isHashPage(pathname: string) {
   return /^\/Undangan\/[^/]+$/.test(pathname) &&
-    ![
-      "/Undangan/opening",
-      "/Undangan/acara",
-      "/Undangan/rundown",
-      "/Undangan/note",
-      "/Undangan/rsvp",
-      "/Undangan/gallery",
-      "/Undangan/komentar",
-      "/Undangan/thanks",
-      "/Undangan/maps",
-    ].includes(pathname);
+    !EXEMPT_PATHS.includes(pathname);
 }
 
 function AccessDeniedPage() {

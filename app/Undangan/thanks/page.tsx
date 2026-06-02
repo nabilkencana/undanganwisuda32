@@ -157,12 +157,10 @@ export default function ThanksPage() {
               {/* ===== FOTO ===== */}
               <div className="relative min-h-[420px] overflow-hidden">
 
-                <Image
-                  src="/angkatan.png"
+                <img
+                  src="/undangan-wisuda-32/angkatan.png"
                   alt="Foto Angkatan"
-                  fill
-                  priority
-                  className="object-cover"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
 
                 {/* OVERLAY */}

@@ -38,19 +38,10 @@ export default function Home() {
       boxShadow: "0 4px 20px rgba(0,0,0,0.2), 0 1px 4px rgba(0,0,0,0.1)",
     }}
   >
-    <Image
-      src="/logo1.png"
+    <img
+      src="/undangan-wisuda-32/logo1.png"
       alt="Logo"
-      width={380}
-      height={80}
-      priority
-      className="
-        h-auto
-        w-[120px]
-        object-contain
-        sm:w-[150px]
-        md:w-[190px]
-      "
+      className="h-auto w-[120px] object-contain sm:w-[150px] md:w-[190px]"
     />
   </div>
 
@@ -77,19 +68,10 @@ export default function Home() {
 
               <div className="relative overflow-hidden rounded-[20px]">
 
-                <Image
-                  src="/angkatan.png"
+                <img
+                  src="/undangan-wisuda-32/angkatan.png"
                   alt="Angkatan"
-                  width={900}
-                  height={1200}
-                  priority
-                  className="
-                    h-[300px]
-                    w-full
-                    object-cover
-                    sm:h-[380px]
-                    md:h-[500px]
-                  "
+                  className="h-[300px] w-full object-cover sm:h-[380px] md:h-[500px]"
                 />
 
                 {/* OVERLAY */}

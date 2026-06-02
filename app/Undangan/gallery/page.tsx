@@ -14,10 +14,10 @@ const GALLERY_CODE =
 /* DATA AWAL                                                    */
 /* ============================================================ */
 const initialPhotos = [
-  "/rpl3-kelas.png",
-  "/rpl6-kelas.png",
-  "/kel1.JPG",
-  "/kel2.JPG",
+  "/undangan-wisuda-32/rpl3-kelas.png",
+  "/undangan-wisuda-32/rpl6-kelas.png",
+  "/undangan-wisuda-32/kel1.JPG",
+  "/undangan-wisuda-32/kel2.JPG",
 ];
 
 /* ============================================================ */
@@ -67,10 +67,18 @@ export default function GalleryPage() {
 
   /* ── OPEN PASSCODE MODAL ── */
   const openPasscodeModal = () => {
-    setPasscode("");
-    setPasscodeError(false);
-    setPasscodeSuccess(false);
-    setShowPasscodeModal(true);
+    const sessionHash = typeof window !== "undefined" ? sessionStorage.getItem("invitation-hash") : null;
+    const queryHash = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("kode") || new URLSearchParams(window.location.search).get("hash") : null;
+    const hasCode = !!(queryHash || sessionHash);
+
+    if (hasCode) {
+      fileInputRef.current?.click();
+    } else {
+      setPasscode("");
+      setPasscodeError(false);
+      setPasscodeSuccess(false);
+      setShowPasscodeModal(true);
+    }
   };
 
   return (

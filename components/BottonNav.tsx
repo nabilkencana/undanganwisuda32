@@ -10,6 +10,8 @@ import {
   BookOpen,
   Clock,
   BookCheck,
+  Image,
+  MessageSquare,
 } from "lucide-react";
 
 const staticLinks = [
@@ -19,33 +21,58 @@ const staticLinks = [
   { href: "/Undangan/note",     label: "Notes",   Icon: BookCheck },
 ];
 
-const NON_HASH_PATHS = [
-  "/Undangan/opening",
-  "/Undangan/acara",
-  "/Undangan/rundown",
-  "/Undangan/note",
-  "/Undangan/gallery",
-  "/Undangan/komentar",
-  "/Undangan/rsvp",
-];
-
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // Default ke /Undangan/rsvp (sama di server & client awal)
-  // Setelah mount, update ke hash page kalau ada — menghindari hydration mismatch
-  const [rsvpHref, setRsvpHref] = useState("/Undangan/rsvp");
+  const [hasCode, setHasCode] = useState(false);
+  const [activeHash, setActiveHash] = useState<string | null>(null);
+  const [rsvpHref, setRsvpHref] = useState("/Undangan/opening#rsvp");
+  const [hashActive, setHashActive] = useState(false);
 
   useEffect(() => {
-    const hash = sessionStorage.getItem("invitation-hash");
-    if (hash) setRsvpHref(`/Undangan/${hash}`);
-  }, []);
+    const sessionHash = typeof window !== "undefined" ? sessionStorage.getItem("invitation-hash") : null;
+    const queryHash = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("kode") || new URLSearchParams(window.location.search).get("hash") : null;
+    const hashVal = queryHash || sessionHash;
+    if (hashVal) {
+      setHasCode(true);
+      setActiveHash(hashVal);
+      setRsvpHref(`/Undangan/opening?kode=${hashVal}#rsvp`);
+    } else {
+      setHasCode(false);
+      setActiveHash(null);
+      setRsvpHref("/Undangan/opening#rsvp");
+    }
+  }, [pathname]);
 
-  const allLinks = [
-    ...staticLinks.slice(0, 2),
-    { href: rsvpHref, label: "RSVP", Icon: BookOpen },
-    ...staticLinks.slice(2),
-  ];
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleHashChange = () => {
+        setHashActive(window.location.hash === "#rsvp");
+      };
+      window.addEventListener("hashchange", handleHashChange);
+      // Run once at start
+      handleHashChange();
+      return () => window.removeEventListener("hashchange", handleHashChange);
+    }
+  }, [pathname]);
+
+  const getHref = (basePath: string) => {
+    return activeHash ? `${basePath}?kode=${activeHash}` : basePath;
+  };
+
+  const allLinks = hasCode
+    ? [
+        { href: getHref("/Undangan/opening"), label: "Home", Icon: Home },
+        { href: getHref("/Undangan/acara"), label: "Info", Icon: Calendar },
+        { href: getHref("/Undangan/rundown"), label: "Rundown", Icon: Clock },
+        { href: rsvpHref, label: "RSVP", Icon: BookOpen },
+        { href: getHref("/Undangan/note"), label: "Notes", Icon: BookCheck },
+        { href: getHref("/Undangan/gallery"), label: "Gallery", Icon: Image },
+        { href: getHref("/Undangan/komentar"), label: "Comments", Icon: MessageSquare },
+      ]
+    : staticLinks.map(link => ({ ...link, href: getHref(link.href) }));
+
+  const isSeven = allLinks.length > 5;
 
   return (
     <div className="fixed bottom-0 left-0 w-full z-50">
@@ -63,14 +90,13 @@ export default function BottomNav() {
           borderTop: "1px solid rgba(255,215,0,0.12)",
         }}
       >
-        <div className="flex items-center px-2 py-2">
+        <div className="flex items-center px-1.5 py-2">
           {allLinks.map(({ href, label, Icon }) => {
+            const baseHref = href.split('?')[0].split('#')[0];
             const isActive =
-              pathname === href ||
-              // Aktif juga kalau ini RSVP dan pathname adalah hash page
-              (label === "RSVP" &&
-                /^\/Undangan\/[^/]+$/.test(pathname) &&
-                !NON_HASH_PATHS.includes(pathname));
+              (label === "RSVP" && hashActive) ||
+              (label === "Home" && pathname === "/Undangan/opening" && !hashActive) ||
+              (label !== "RSVP" && label !== "Home" && pathname === baseHref);
 
             return (
               <Link
@@ -78,8 +104,8 @@ export default function BottomNav() {
                 href={href}
                 className="relative flex flex-1 flex-col items-center justify-center rounded-2xl transition-all duration-300 active:scale-90"
                 style={{
-                  paddingTop: 10,
-                  paddingBottom: 10,
+                  paddingTop: isSeven ? 8 : 10,
+                  paddingBottom: isSeven ? 8 : 10,
                   background: isActive
                     ? "linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(255,215,0,0.04) 100%)"
                     : "transparent",
@@ -87,7 +113,7 @@ export default function BottomNav() {
                 }}
               >
                 <Icon
-                  size={20}
+                  size={isSeven ? 17 : 20}
                   style={{
                     color: isActive ? "#ffd700" : "rgba(255,255,255,0.4)",
                     filter: isActive ? "drop-shadow(0 0 6px rgba(255,215,0,0.5))" : "none",
@@ -95,10 +121,10 @@ export default function BottomNav() {
                   }}
                 />
                 <span
-                  className="mt-1.5 font-medium"
+                  className="mt-1 font-medium text-center"
                   style={{
-                    fontSize: 9,
-                    letterSpacing: "0.04em",
+                    fontSize: isSeven ? 8 : 9,
+                    letterSpacing: isSeven ? "0.01em" : "0.04em",
                     color: isActive ? "#ffd700" : "rgba(255,255,255,0.35)",
                     fontFamily: "'Cinzel', serif",
                     transition: "color 0.3s",
@@ -108,7 +134,7 @@ export default function BottomNav() {
                 </span>
                 {isActive && (
                   <div
-                    className="absolute bottom-1.5 h-0.5 w-5 rounded-full"
+                    className="absolute bottom-1 h-0.5 w-4 rounded-full"
                     style={{ background: "linear-gradient(to right, transparent, #ffd700, transparent)" }}
                   />
                 )}

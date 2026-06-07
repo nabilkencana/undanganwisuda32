@@ -31,6 +31,7 @@ function isHashPage(pathname: string) {
     !EXEMPT_PATHS.includes(pathname);
 }
 
+
 function AccessDeniedPage() {
   return (
     <main
